@@ -4,7 +4,6 @@
  *
  */
 
-
 /*
  *  ======== StartBIOS.c ========
  */
@@ -38,7 +37,7 @@
 #include <network_events.h>
 
 
-#include <UIP_Task.h>
+#include <Blink_Task.h>
 
 
 
@@ -46,6 +45,7 @@ int main(void)
 {
 
     uint32_t ui32SysClock;
+    static led_descriptor_t led_desc;
 	/* Call board init functions. */
 	ui32SysClock = Board_initGeneral(120*1000*1000);
 
@@ -61,9 +61,11 @@ int main(void)
     //    UARTStdioConfig(0, 115200, ui32SysClock);
 
 
-	/*Initialize UIP Stack - calls led_server, httpd or client depending on configuration of uip/uip-conf.h  */
-	(void) setup_UIP_Task(ui32SysClock);
-	System_printf("Created UIP Task\n");
+	led_desc.port_base = GPIO_PORTN_BASE;
+	led_desc.led = GPIO_PIN_1;
+	/*Initialize Blink Task*/
+	(void) setup_Blink_Task(&led_desc, 500);
+	System_printf("Created Blink Task\n");
 
 
     /* SysMin will only print to the console upon calling flush or exit */
