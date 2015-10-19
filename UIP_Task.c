@@ -96,7 +96,7 @@ void NetFxn(UArg arg0, UArg arg1)
     EK_TM4C1294XL_startEMAC();
 
 
-	//get ONLY ONE memory from global heap - optimize - this is YOUR! task
+	//get ONLY ONE memory block from network stack heap - optimize - this is YOUR! task
 	Error_init(&eb);
 	eth_buf = (uint8_t *)Memory_alloc((xdc_runtime_IHeap_Handle)cfg_netHeap, ETH_BUFSIZE, 0, &eb);
 	if (eth_buf == NULL) {
