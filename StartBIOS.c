@@ -34,7 +34,6 @@
 /*application header files*/
 #include <ctype.h>
 #include <string.h>
-#include <network_events.h>
 
 
 #include <Blink_Task.h>
