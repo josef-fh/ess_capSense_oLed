@@ -1,26 +1,26 @@
 
-XOPTS = -I"/home/matthias/ti/xdctools_3_31_01_33_core/packages/" -Dxdc_target_types__=/home/matthias/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/ti/targets/arm/elf/std.h -Dxdc_target_name__=M4F
+XOPTS = -I"/home/kramer/ti/xdctools_3_31_01_33_core/packages/" -Dxdc_target_types__=/home/kramer/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/ti/targets/arm/elf/std.h -Dxdc_target_name__=M4F
 
-vpath % /home/matthias/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/ti/sysbios/
-vpath %.c /home/matthias/ti/xdctools_3_31_01_33_core/packages/
+vpath % /home/kramer/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/ti/sysbios/
+vpath %.c /home/kramer/ti/xdctools_3_31_01_33_core/packages/
 
 CCOPTS    = --endian=little -mv7M4 --abi=eabi --float_support=fpv4spd16 -q -ms --opt_for_speed=2  --program_level_compile -o3 -g --optimize_with_debug  -Dti_sysbios_family_arm_m3_Hwi_enableException__D=TRUE -Dti_sysbios_family_arm_m3_Hwi_disablePriority__D=32U -Dti_sysbios_family_arm_m3_Hwi_numSparseInterrupts__D=0U
 
-XDC_ROOT  = /home/matthias/ti/xdctools_3_31_01_33_core/packages/
+XDC_ROOT  = /home/kramer/ti/xdctools_3_31_01_33_core/packages/
 
-BIOS_ROOT = /home/matthias/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/ti/sysbios/
+BIOS_ROOT = /home/kramer/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/ti/sysbios/
 
 BIOS_DEFS =  -Dti_sysbios_BIOS_swiEnabled__D=TRUE -Dti_sysbios_BIOS_taskEnabled__D=TRUE -Dti_sysbios_BIOS_clockEnabled__D=TRUE -Dti_sysbios_BIOS_runtimeCreatesEnabled__D=TRUE -Dti_sysbios_hal_Hwi_DISABLE_ALL_HOOKS -Dti_sysbios_knl_Swi_DISABLE_ALL_HOOKS -Dti_sysbios_knl_Task_DISABLE_ALL_HOOKS -Dti_sysbios_BIOS_smpEnabled__D=FALSE -Dti_sysbios_Build_useHwiMacros -Dti_sysbios_knl_Swi_numPriorities__D=16 -Dti_sysbios_knl_Task_deleteTerminatedTasks__D=FALSE -Dti_sysbios_knl_Task_numPriorities__D=16 -Dti_sysbios_knl_Task_checkStackFlag__D=TRUE -Dti_sysbios_knl_Clock_TICK_SOURCE=ti_sysbios_knl_Clock_TickSource_TIMER -Dti_sysbios_knl_Clock_TICK_MODE=ti_sysbios_knl_Clock_TickMode_PERIODIC -Dti_sysbios_hal_Core_delegate_getId=ti_sysbios_hal_CoreNull_getId__E -Dti_sysbios_hal_Core_delegate_interruptCore=ti_sysbios_hal_CoreNull_interruptCore__E -Dti_sysbios_hal_Core_delegate_lock=ti_sysbios_hal_CoreNull_lock__E -Dti_sysbios_hal_Core_delegate_unlock=ti_sysbios_hal_CoreNull_unlock__E -Dti_sysbios_hal_Core_numCores__D=1 -Dti_sysbios_hal_CoreNull_numCores__D=1 -Dti_sysbios_utils_Load_taskEnabled__D=TRUE -Dti_sysbios_utils_Load_swiEnabled__D=FALSE -Dti_sysbios_utils_Load_hwiEnabled__D=FALSE -Dti_sysbios_family_arm_m3_Hwi_dispatcherSwiSupport__D=TRUE -Dti_sysbios_family_arm_m3_Hwi_dispatcherTaskSupport__D=TRUE -Dti_sysbios_family_arm_m3_Hwi_dispatcherAutoNestingSupport__D=TRUE -Dti_sysbios_family_arm_m3_Hwi_dispatcherIrpTrackingSupport__D=TRUE -Dti_sysbios_knl_Semaphore_supportsEvents__D=FALSE -Dti_sysbios_knl_Semaphore_supportsPriority__D=TRUE
 
-BIOS_INC  = -I"/home/matthias/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/"
+BIOS_INC  = -I"/home/kramer/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/"
 
-TARGET_INC = -I"/home/matthias/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/"
+TARGET_INC = -I"/home/kramer/ti/tirtos_tivac_2_14_00_10/products/bios_6_42_01_20/packages/"
 
 INCS = $(BIOS_INC) $(TARGET_INC)  
 
-CC = /home/matthias/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl -c $(CCOPTS) -I /home/matthias/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include
-ASM = /home/matthias/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl -c $(CCOPTS) -I /home/matthias/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include
-AR = /home/matthias/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armar rq
+CC = /home/kramer/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl -c $(CCOPTS) -I /home/kramer/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include
+ASM = /home/kramer/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl -c $(CCOPTS) -I /home/kramer/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include
+AR = /home/kramer/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armar rq
 
 DEL = rm -f
 CP = cp -f

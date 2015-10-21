@@ -1,13 +1,5 @@
-/*! \file UIP_Task.c
-    \brief CCSv6 project using TI-RTOS and a custom network driver providing an ndk-less base environment
-    \author Matthias Wenzl
-
-*/
-
-
-
 /*
- *  ======== UIP_Task.c ========
+ *  ======== Blink_Task.c ========
  */
 #include <stdbool.h>
 #include <inc/hw_memmap.h>
@@ -69,11 +61,9 @@ int setup_Blink_Task(led_descriptor_t *led_desc, uint32_t wait_ticks)
 	Error_Block eb;
 
     /*configure gpio port_base according to led*/
-	GPIOPadConfigGet(led_desc->port_base, led_desc->led, &ui32Strength, &ui32PinType);
-	GPIOPadConfigSet(led_desc->port_base, led_desc->led,ui32Strength,GPIO_PIN_TYPE_STD);
 	GPIOPinTypeGPIOOutput(led_desc->port_base, led_desc->led);
 	
-    /* Create networking task with priority 15*/
+    /* Create Blink task with priority 15*/
     Error_init(&eb);
     Task_Params_init(&taskLedParams);
     taskLedParams.stackSize = 1024;/*stack in bytes*/

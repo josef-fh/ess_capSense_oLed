@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Texas Instruments Incorporated
+ * Copyright (c) 2015, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,8 @@
  *
  *  @brief      EK_TM4C1294XL Board Specific APIs
  *
- *  The EK_TM4C1294XL header file should be included in an application as follows:
+ *  The EK_TM4C1294XL header file should be included in an application as
+ *  follows:
  *  @code
  *  #include <EK_TM4C1294XL.h>
  *  @endcode
@@ -49,41 +50,9 @@
 extern "C" {
 #endif
 
-#include <ti/drivers/GPIO.h>
-#include <ti/sysbios/knl/Semaphore.h>
-#include <ti/sysbios/knl/Event.h>
-#include <Board.h>
-
-#define ETH_USE_SEM 0
-#define ETH_USE_EVENT 1
-#define ETH_INIT_AND_RUN 0
-
-
-#if(!(ETH_USE_SEM ^ ETH_USE_EVENT))
-	#error "Use either ETH_USE_SEM or ETH_USE_EVENT"
-#endif
-
-
-/*EMAC specifics*/
-
-/*transmitter, receiver descriptor amount - 3 is the absolute minimum (see datahseet).
- * increase with respect to available memory*/
-/*However, due to internal uip stack operation concepts, only one 1536 byte long
- * buffer will be used for transmission purposes*/
-#define NUM_TX_DESCRIPTORS 3
-#define NUM_RX_DESCRIPTORS 5
-
-
-
 /* LEDs on EK_TM4C1294XL are active high. */
-#define EK_TM4C1294XL_LED_OFF ( 0)
-#define EK_TM4C1294XL_LED_ON  (~0)
-
-/* GPIO_Callbacks structure for GPIO interrupts */
-/* handled by <Board.h>
- * extern const GPIO_Callbacks EK_TM4C1294XL_gpioPortJCallbacks;
- *
- */
+#define EK_TM4C1294XL_LED_OFF (0)
+#define EK_TM4C1294XL_LED_ON  (1)
 
 /*!
  *  @def    EK_TM4C1294XL_EMACName
@@ -100,10 +69,10 @@ typedef enum EK_TM4C1294XL_EMACName {
  *  @brief  Enum of LED names on the EK_TM4C1294XL dev board
  */
 typedef enum EK_TM4C1294XL_GPIOName {
-	EK_TM4C1294XL_D1 = 0,
-	EK_TM4C1294XL_D2,
-	EK_TM4C1294XL_USR_SW1,
-	EK_TM4C1294XL_USR_SW2,
+    EK_TM4C1294XL_USR_SW1 = 0,
+    EK_TM4C1294XL_USR_SW2,
+    EK_TM4C1294XL_D1,
+    EK_TM4C1294XL_D2,
 
     EK_TM4C1294XL_GPIOCOUNT
 } EK_TM4C1294XL_GPIOName;
@@ -113,13 +82,21 @@ typedef enum EK_TM4C1294XL_GPIOName {
  *  @brief  Enum of I2C names on the EK_TM4C1294XL dev board
  */
 typedef enum EK_TM4C1294XL_I2CName {
-	EK_TM4C1294XL_I2C0 = 0,
-	EK_TM4C1294XL_I2C2,
-    EK_TM4C1294XL_I2C7,
+    EK_TM4C1294XL_I2C7 = 0,
     EK_TM4C1294XL_I2C8,
 
     EK_TM4C1294XL_I2CCOUNT
-} EEK_TM4C1294XL_I2CName;
+} EK_TM4C1294XL_I2CName;
+
+/*!
+ *  @def    EK_TM4C1294XL_PWMName
+ *  @brief  Enum of PWM names on the EK_TM4C1294XL dev board
+ */
+typedef enum EK_TM4C1294XL_PWMName {
+    EK_TM4C1294XL_PWM0 = 0,
+
+    EK_TM4C1294XL_PWMCOUNT
+} EK_TM4C1294XL_PWMName;
 
 /*!
  *  @def    EK_TM4C1294XL_SDSPIName
@@ -149,9 +126,6 @@ typedef enum EK_TM4C1294XL_SPIName {
  */
 typedef enum EK_TM4C1294XL_UARTName {
     EK_TM4C1294XL_UART0 = 0,
-    EK_TM4C1294XL_UART2,
-    EK_TM4C1294XL_UART6,
-    EK_TM4C1294XL_UART7,
 
     EK_TM4C1294XL_UARTCOUNT
 } EK_TM4C1294XL_UARTName;
@@ -195,67 +169,11 @@ typedef enum EK_TM4C1294XL_WiFiName {
     EK_TM4C1294XL_WIFICOUNT
 } EK_TM4C1294XL_WiFiName;
 
-
-/*EMAC specific functions*/
-/*initialize receive and transmit DMA descriptors*/
-static void InitDescriptors(uint32_t ui32Base);
-
-/*Ethernet Interrupt handler*/
-void EthernetIntHandler(UArg arg);
-
-/*
- * @brief - Read a completely received ethernet frame
- * @param - pointer to a variable holding the length of the received frame
- * @return - pointer to the received frame
- * */
-uint8_t * PacketReceive(int32_t *len);
-
-
-/*
- * @brief - Write a complete frame to the transmit buffer in a blocking way (wait until a DMA descriptior is ready)
- * @param *pui8Buf - pointer to a variable holding the frame
- * @param i32BufLen -  variable holding the length of the received frame
- * @return - number of bytes sent
- * */
-int32_t PacketTransmit(uint8_t *pui8Buf, int32_t i32BufLen);
-void FreeEmacRxBuf(void);
-
-/* @brief - Initialize the EMAC core. Blocks until a link is established
- * @param *mac_addr - a pointer to a buffer holding the to be configured mac address, if a NULL pointer is passed,
- * the pre configured mac address is used, if non is found a NULL pointer is returned
- * @return On success a semaphore handle which can be used to wait for a completely received frame in a task is returned
- * otherwise a NULL pointer is returned
- * */
-#if ETH_USE_SEM
-Semaphore_Handle EK_TM4C1294XL_initEMAC(uint32_t sysclock, uint8_t *mac_addr);
-#endif
-#if ETH_USE_EVENT
-Event_Handle EK_TM4C1294XL_initEMAC(uint32_t sysclock, uint8_t *mac_addr);
-#endif
-
-#if !ETH_INIT_AND_RUN
-/*
- * @brief - a seperate start emac function in case ETH_INIT_AND_RUN is not defined
- *
- */
-void EK_TM4C1294XL_startEMAC(void);
-#endif
-
-/*
- * @biref - get mac address from device
- *
- * @return - pointer to mac address buffer
- *
- */
-uint8_t * EK_TM4C1294XL_getMACAddr(void);
-
-
-void EK_TM4C1294XL_initDMA(void);
-
 /*!
  *  @brief  Initialize the general board specific settings
  *
- *  This function initializes the general board specific settings. This include
+ *  This function initializes the general board specific settings.
+ *  This includes:
  *     - Enable clock sources for peripherals
  */
 extern uint32_t EK_TM4C1294XL_initGeneral(uint32_t sysclock);
@@ -269,7 +187,7 @@ extern uint32_t EK_TM4C1294XL_initGeneral(uint32_t sysclock);
  *  The EMAC address is programmed as part of this call.
  *
  */
-//extern void EK_TM4C1294XL_initEMAC(void);
+extern void EK_TM4C1294XL_initEMAC(void);
 
 /*!
  *  @brief  Initialize board specific GPIO settings
@@ -277,7 +195,7 @@ extern uint32_t EK_TM4C1294XL_initGeneral(uint32_t sysclock);
  *  This function initializes the board specific GPIO settings and
  *  then calls the GPIO_init API to initialize the GPIO module.
  *
- *  The GPIOs controlled by the GPIO module are determined by the GPIO_config
+ *  The GPIOs controlled by the GPIO module are determined by the GPIO_PinConfig
  *  variable.
  */
 extern void EK_TM4C1294XL_initGPIO(void);
@@ -292,6 +210,17 @@ extern void EK_TM4C1294XL_initGPIO(void);
  *  I2C_config variable.
  */
 extern void EK_TM4C1294XL_initI2C(void);
+
+/*!
+ *  @brief  Initialize board specific PWM settings
+ *
+ *  This function initializes the board specific PWM settings and then calls
+ *  the PWM_init API to initialize the PWM module.
+ *
+ *  The PWM peripherals controlled by the PWM module are determined by the
+ *  PWM_config variable.
+ */
+extern void EK_TM4C1294XL_initPWM(void);
 
 /*!
  *  @brief  Initialize board specific SDSPI settings
@@ -366,6 +295,9 @@ extern void EK_TM4C1294XL_initWatchdog(void);
  *
  *  The hardware resources controlled by the WiFi module are determined by the
  *  WiFi_config variable.
+ *
+ *  A SimpleLink CC3100 device or module is required and must be connected to
+ *  use the WiFi driver.
  */
 extern void EK_TM4C1294XL_initWiFi(void);
 
