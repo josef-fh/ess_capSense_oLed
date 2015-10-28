@@ -40,7 +40,7 @@ void UARTFxn(UArg arg0, UArg arg1);
  *
  *  \return always zero. In case of error the system halts.
 */
-int setup_UART_Task();
+int setup_UART_Task(void);
 
 
 

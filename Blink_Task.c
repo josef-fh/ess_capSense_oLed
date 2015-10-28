@@ -1,5 +1,6 @@
 /*
  *  ======== Blink_Task.c ========
+ *  Author: Michael Kramer / Matthias Wenzl
  */
 #include <stdbool.h>
 #include <inc/hw_memmap.h>
@@ -57,7 +58,6 @@ int setup_Blink_Task(led_descriptor_t *led_desc, uint32_t wait_ticks)
 {
 	Task_Params taskLedParams;
 	Task_Handle taskLed;
-	uint32_t ui32Strength, ui32PinType;
 	Error_Block eb;
 
     /*configure gpio port_base according to led*/

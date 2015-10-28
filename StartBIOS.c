@@ -1,6 +1,5 @@
 /*
- * CCSv6 project using TI-RTOS and a custom network driver
- * providing an ndk-less base environment
+ * CCSv6 project using TI-RTOS
  *
  */
 
@@ -26,8 +25,6 @@
 /* TI-RTOS Header files */
 #include <ti/drivers/UART.h>
 
-/* Drivers Header files*/
-//#include <ti/drivers/GPIO.h>
 
 /*Board Header files */
 #include <Board.h>
@@ -51,13 +48,6 @@ int main(void)
 	/* Call board init functions. */
 	ui32SysClock = Board_initGeneral(120*1000*1000);
 
-
-    //
-    // Initialize the UART for console I/O.
-    //
-    //    UARTStdioConfig(0, 115200, ui32SysClock);
-
-
 	led_desc[0].port_base = GPIO_PORTN_BASE;
 	led_desc[0].led = GPIO_PIN_1;
 	/*Initialize+start Blink Task*/
@@ -71,7 +61,7 @@ int main(void)
 	System_printf("Created Blink Task2\n");
 
 	/*Initialize+start UART Task*/
-	(void) setup_UART_Task(0,0);
+	(void) setup_UART_Task();
 	System_printf("Created UART Task\n");
 
     /* SysMin will only print to the console upon calling flush or exit */

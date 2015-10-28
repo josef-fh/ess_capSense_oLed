@@ -78,11 +78,10 @@ void UARTFxn(UArg arg0, UArg arg1)
 /*
  *  setup task function
  */
-int setup_UART_Task(led_descriptor_t *led_desc, uint32_t wait_ticks)
+int setup_UART_Task(void)
 {
 	Task_Params taskUARTParams;
 	Task_Handle taskUART;
-	uint32_t ui32Strength, ui32PinType;
 	Error_Block eb;
 
 
