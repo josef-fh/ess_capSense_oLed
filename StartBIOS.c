@@ -47,6 +47,7 @@ int main(void)
     static led_descriptor_t led_desc[2];
 	/* Call board init functions. */
 	ui32SysClock = Board_initGeneral(120*1000*1000);
+	(void)ui32SysClock; // We don't really need this (yet)
 
 	led_desc[0].port_base = GPIO_PORTN_BASE;
 	led_desc[0].led = GPIO_PIN_1;
