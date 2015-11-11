@@ -67,7 +67,7 @@ int setup_Blink_Task(led_descriptor_t *led_desc, uint32_t wait_ticks)
     Error_init(&eb);
     Task_Params_init(&taskLedParams);
     taskLedParams.stackSize = 1024;/*stack in bytes*/
-    taskLedParams.priority = 15;/*15 is default 16 is highest priority -> see RTOS configuration*/
+    taskLedParams.priority = 15;/*0-15 (15 is highest priority on default -> see RTOS Task configuration)*/
     taskLedParams.arg0 = (UArg) led_desc;/*pass led descriptor to arg0*/
     taskLedParams.arg1 = (UArg) wait_ticks;
     taskLed = Task_create((Task_FuncPtr)BlinkFxn, &taskLedParams, &eb);
