@@ -53,13 +53,16 @@ int main(void)
 	led_desc[0].led = GPIO_PIN_1;
 	/*Initialize+start Blink Task*/
 	(void) setup_Blink_Task(&led_desc[0], 500);
+	/*System_printf() is VERY slow!*/
 	System_printf("Created Blink Task1\n");
+	System_flush();
 
 	led_desc[1].port_base = GPIO_PORTF_BASE;
 	led_desc[1].led = GPIO_PIN_0;
 	/*Initialize+start Blink Task*/
 	(void) setup_Blink_Task(&led_desc[1], 250);
 	System_printf("Created Blink Task2\n");
+	System_flush();
 
 	/*Initialize+start UART Task*/
 	(void) setup_UART_Task();
