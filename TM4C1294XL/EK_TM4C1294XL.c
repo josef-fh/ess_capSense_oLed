@@ -463,8 +463,8 @@ const SDSPITiva_HWAttrs sdspiTivaHWattrs[EK_TM4C1294XL_SDSPICOUNT] = {
         GPIO_PIN_0,         /* MISO PIN */
         GPIO_PORTD_BASE,    /* SPI MOSI PORT */
         GPIO_PIN_1,         /* MOSI PIN */
-        GPIO_PORTC_BASE,    /* GPIO CS PORT */
-        GPIO_PIN_7,         /* CS PIN */
+        GPIO_PORTH_BASE,    /* GPIO CS PORT */
+        GPIO_PIN_2,         /* CS PIN */
     },
     {
         SSI3_BASE,          /* SPI base address */
@@ -504,8 +504,8 @@ void EK_TM4C1294XL_initSDSPI(void)
                      GPIO_PIN_0,
                      GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPU);
 
-    GPIOPadConfigSet(GPIO_PORTC_BASE,
-                     GPIO_PIN_7,
+    GPIOPadConfigSet(GPIO_PORTH_BASE,
+                     GPIO_PIN_2,
                      GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 
     GPIOPinConfigure(GPIO_PD3_SSI2CLK);
