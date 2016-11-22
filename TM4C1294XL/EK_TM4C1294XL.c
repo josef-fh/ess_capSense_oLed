@@ -345,13 +345,21 @@ I2CTiva_Object i2cTivaObjects[EK_TM4C1294XL_I2CCOUNT];
 
 /* I2C configuration structure, describing which pins are to be used */
 const I2CTiva_HWAttrs i2cTivaHWAttrs[EK_TM4C1294XL_I2CCOUNT] = {
+#if I2CM_7
     {I2C7_BASE, INT_I2C7, ~0 /* Interrupt priority */},
+#endif
+#if I2CM_8
     {I2C8_BASE, INT_I2C8, ~0 /* Interrupt priority */}
+#endif
 };
 
 const I2C_Config I2C_config[] = {
-    {&I2CTiva_fxnTable, &i2cTivaObjects[0], &i2cTivaHWAttrs[0]},
-    {&I2CTiva_fxnTable, &i2cTivaObjects[1], &i2cTivaHWAttrs[1]},
+#if I2CM_7
+    {&I2CTiva_fxnTable, &i2cTivaObjects[EK_TM4C1294XL_I2C7], &i2cTivaHWAttrs[EK_TM4C1294XL_I2C7]},
+#endif
+#if I2CM_8
+    {&I2CTiva_fxnTable, &i2cTivaObjects[EK_TM4C1294XL_I2C8], &i2cTivaHWAttrs[EK_TM4C1294XL_I2C8]},
+#endif
     {NULL, NULL, NULL}
 };
 
@@ -368,24 +376,26 @@ void EK_TM4C1294XL_initI2C(void)
      * conflict before running your the application.
      */
     /* Enable the peripheral */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C7);
+#if I2CM_7
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C7);
 
-    /* Configure the appropriate pins to be I2C instead of GPIO. */
-    GPIOPinConfigure(GPIO_PD0_I2C7SCL);
-    GPIOPinConfigure(GPIO_PD1_I2C7SDA);
-    GPIOPinTypeI2CSCL(GPIO_PORTD_BASE, GPIO_PIN_0);
-    GPIOPinTypeI2C(GPIO_PORTD_BASE, GPIO_PIN_1);
+	/* Configure the appropriate pins to be I2C instead of GPIO. */
+	GPIOPinConfigure(GPIO_PD0_I2C7SCL);
+	GPIOPinConfigure(GPIO_PD1_I2C7SDA);
+	GPIOPinTypeI2CSCL(GPIO_PORTD_BASE, GPIO_PIN_0);
+	GPIOPinTypeI2C(GPIO_PORTD_BASE, GPIO_PIN_1);
+#endif
+	/* I2C8 Init */
+	/* Enable the peripheral */
+#if I2CM_8
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C8);
 
-    /* I2C8 Init */
-    /* Enable the peripheral */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C8);
-
-    /* Configure the appropriate pins to be I2C instead of GPIO. */
-    GPIOPinConfigure(GPIO_PA2_I2C8SCL);
-    GPIOPinConfigure(GPIO_PA3_I2C8SDA);
-    GPIOPinTypeI2CSCL(GPIO_PORTA_BASE, GPIO_PIN_2);
-    GPIOPinTypeI2C(GPIO_PORTA_BASE, GPIO_PIN_3);
-
+	/* Configure the appropriate pins to be I2C instead of GPIO. */
+	GPIOPinConfigure(GPIO_PA2_I2C8SCL);
+	GPIOPinConfigure(GPIO_PA3_I2C8SDA);
+	GPIOPinTypeI2CSCL(GPIO_PORTA_BASE, GPIO_PIN_2);
+	GPIOPinTypeI2C(GPIO_PORTA_BASE, GPIO_PIN_3);
+#endif
     I2C_init();
 }
 
@@ -568,7 +578,8 @@ uint32_t spiTivaDMAscratchBuf[EK_TM4C1294XL_SPICOUNT];
 
 /* SPI configuration structure */
 const SPITivaDMA_HWAttrs spiTivaDMAHWAttrs[EK_TM4C1294XL_SPICOUNT] = {
-    {
+#if SSIM_2
+	{
         SSI2_BASE,
         INT_SSI2,
         ~0,         /* Interrupt priority */
@@ -580,6 +591,8 @@ const SPITivaDMA_HWAttrs spiTivaDMAHWAttrs[EK_TM4C1294XL_SPICOUNT] = {
         UDMA_CH12_SSI2RX,
         UDMA_CH13_SSI2TX
     },
+#endif
+#if SSIM_3
     {
         SSI3_BASE,
         INT_SSI3,
@@ -592,11 +605,16 @@ const SPITivaDMA_HWAttrs spiTivaDMAHWAttrs[EK_TM4C1294XL_SPICOUNT] = {
         UDMA_CH14_SSI3RX,
         UDMA_CH15_SSI3TX
     }
+#endif
 };
 
 const SPI_Config SPI_config[] = {
-    {&SPITivaDMA_fxnTable, &spiTivaDMAObjects[0], &spiTivaDMAHWAttrs[0]},
-    {&SPITivaDMA_fxnTable, &spiTivaDMAObjects[1], &spiTivaDMAHWAttrs[1]},
+#if SSIM_2
+    {&SPITivaDMA_fxnTable, &spiTivaDMAObjects[EK_TM4C1294XL_SPI2], &spiTivaDMAHWAttrs[EK_TM4C1294XL_SPI2]},
+#endif
+#if SSIM_3
+    {&SPITivaDMA_fxnTable, &spiTivaDMAObjects[EK_TM4C1294XL_SPI3], &spiTivaDMAHWAttrs[EK_TM4C1294XL_SPI3]},
+#endif
     {NULL, NULL, NULL}
 };
 
@@ -612,27 +630,31 @@ void EK_TM4C1294XL_initSPI(void)
      * an application.  Modify the pin mux settings in this file and resolve the
      * conflict before running your the application.
      */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
+#if SSIM_2
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
 
-    GPIOPinConfigure(GPIO_PD3_SSI2CLK);
-    GPIOPinConfigure(GPIO_PD2_SSI2FSS);
-    GPIOPinConfigure(GPIO_PD1_SSI2XDAT0);
-    GPIOPinConfigure(GPIO_PD0_SSI2XDAT1);
+	GPIOPinConfigure(GPIO_PD3_SSI2CLK);
+	GPIOPinConfigure(GPIO_PD2_SSI2FSS);
+	GPIOPinConfigure(GPIO_PD1_SSI2XDAT0);
+	GPIOPinConfigure(GPIO_PD0_SSI2XDAT1);
 
-    GPIOPinTypeSSI(GPIO_PORTD_BASE, GPIO_PIN_0 | GPIO_PIN_1 |
-                                    GPIO_PIN_2 | GPIO_PIN_3);
+	GPIOPinTypeSSI(GPIO_PORTD_BASE, GPIO_PIN_0 | GPIO_PIN_1 |
+                                   GPIO_PIN_2 | GPIO_PIN_3);
 
-    /* SSI3 */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
+#endif
+#if SSIM_3
+	/* SSI3 */
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
 
-    GPIOPinConfigure(GPIO_PQ0_SSI3CLK);
-    GPIOPinConfigure(GPIO_PQ1_SSI3FSS);
-    GPIOPinConfigure(GPIO_PQ2_SSI3XDAT0);
-    GPIOPinConfigure(GPIO_PQ3_SSI3XDAT1);
+	GPIOPinConfigure(GPIO_PQ0_SSI3CLK);
+	GPIOPinConfigure(GPIO_PQ1_SSI3FSS);
+	GPIOPinConfigure(GPIO_PQ2_SSI3XDAT0);
+	GPIOPinConfigure(GPIO_PQ3_SSI3XDAT1);
 
-    GPIOPinTypeSSI(GPIO_PORTQ_BASE, GPIO_PIN_0 | GPIO_PIN_1 |
-                                    GPIO_PIN_2 | GPIO_PIN_3);
+	GPIOPinTypeSSI(GPIO_PORTQ_BASE, GPIO_PIN_0 | GPIO_PIN_1 |
+                                   GPIO_PIN_2 | GPIO_PIN_3);
 
+#endif
     EK_TM4C1294XL_initDMA();
     SPI_init();
 }

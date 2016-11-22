@@ -50,6 +50,24 @@
 extern "C" {
 #endif
 
+/*i2c configuration*/
+#define I2CM_7 1
+#define I2CM_8 1
+
+/*spi configguration*/
+#define SSIM_2 1
+#define SSIM_3 1
+
+#if (I2CM_7 && SSIM_2)
+	#error "I2M_7 and SSIM_2 use the same physical pins -> conflict - Please configure to your needs (local_inc/EK_TM4C1294XL.h)"
+#endif
+
+
+#if (I2CM_8 && SSIM_3)
+#error "I2M_8 and SSIM_3 use the same physical pins -> conflict - Please configure to your needs (local_inc/EK_TM4C1294XL.h)"
+#endif
+
+
 /* LEDs on EK_TM4C1294XL are active high. */
 #define EK_TM4C1294XL_LED_OFF (0)
 #define EK_TM4C1294XL_LED_ON  (1)
@@ -82,8 +100,12 @@ typedef enum EK_TM4C1294XL_GPIOName {
  *  @brief  Enum of I2C names on the EK_TM4C1294XL dev board
  */
 typedef enum EK_TM4C1294XL_I2CName {
-    EK_TM4C1294XL_I2C7 = 0,
+#if I2CM_7
+    EK_TM4C1294XL_I2C7,
+#endif
+#if I2CM_8
     EK_TM4C1294XL_I2C8,
+#endif
 
     EK_TM4C1294XL_I2CCOUNT
 } EK_TM4C1294XL_I2CName;
@@ -114,8 +136,12 @@ typedef enum EK_TM4C1294XL_SDSPIName {
  *  @brief  Enum of SPI names on the EK_TM4C1294XL dev board
  */
 typedef enum EK_TM4C1294XL_SPIName {
-    EK_TM4C1294XL_SPI2 = 0,
+#if SSIM_2
+    EK_TM4C1294XL_SPI2,
+#endif
+#if SSIM_3
     EK_TM4C1294XL_SPI3,
+#endif
 
     EK_TM4C1294XL_SPICOUNT
 } EK_TM4C1294XL_SPIName;
