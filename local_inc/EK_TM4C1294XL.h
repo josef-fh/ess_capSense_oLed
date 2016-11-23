@@ -50,6 +50,9 @@
 extern "C" {
 #endif
 
+/* The defines below control the respective hardware masters.
+ * To enable or disable them set the respective macro to 1 or 0 respectively. */
+
 /*i2c configuration*/
 #define I2CM_7 1
 #define I2CM_8 1
