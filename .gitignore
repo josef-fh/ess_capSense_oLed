@@ -1,9 +1,7 @@
-Release/
+/.config/
 Debug/
+/.launches/
+Release/
+/.settings/
+/src/
 .xdchelp
-.config
-.launch
-.launches/
-.config/
-.settings/
-
