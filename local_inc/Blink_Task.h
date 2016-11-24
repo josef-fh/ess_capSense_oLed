@@ -35,11 +35,12 @@ void BlinkFxn(UArg arg0, UArg arg1);
  *  Setup Blink task
  *  Task has highest priority and receives 1kB of stack
  *
+ *   \param prio the task's priority.
  *   \param led_desc LED descriptor.
  *   \param time to wait in ticks for led to toggle
  *
  *  \return always zero. In case of error the system halts.
  */
-int setup_Blink_Task(led_descriptor_t *led_desc, uint32_t wait_ticks);
+int setup_Blink_Task(int prio, led_descriptor_t *led_desc, uint32_t wait_ticks);
 
 #endif

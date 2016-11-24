@@ -38,7 +38,7 @@ int main(void)
     led_desc[0].port_base = GPIO_PORTN_BASE;
     led_desc[0].led = GPIO_PIN_1;
     /* Initialize+start Blink Task*/
-    (void)setup_Blink_Task(&led_desc[0], 500);
+    (void)setup_Blink_Task(15, &led_desc[0], 500);
     /* System_printf() is VERY slow!*/
     System_printf("Created Blink Task1\n");
     System_flush();
@@ -46,12 +46,12 @@ int main(void)
     led_desc[1].port_base = GPIO_PORTF_BASE;
     led_desc[1].led = GPIO_PIN_0;
     /*Initialize+start Blink Task*/
-    (void)setup_Blink_Task(&led_desc[1], 250);
+    (void)setup_Blink_Task(15, &led_desc[1], 250);
     System_printf("Created Blink Task2\n");
     System_flush();
 
     /*Initialize+start UART Task*/
-    (void)setup_UART_Task();
+    (void)setup_UART_Task(15);
     System_printf("Created UART Task\n");
 
     /* SysMin will only print to the console upon calling flush or exit */

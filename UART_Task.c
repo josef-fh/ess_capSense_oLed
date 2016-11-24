@@ -73,7 +73,7 @@ void UARTFxn(UArg arg0, UArg arg1)
 /*
  *  Setup task function
  */
-int setup_UART_Task(void)
+int setup_UART_Task(int prio)
 {
     Task_Params taskUARTParams;
     Task_Handle taskUART;
@@ -94,7 +94,7 @@ int setup_UART_Task(void)
     Error_init(&eb);
     Task_Params_init(&taskUARTParams);
     taskUARTParams.stackSize = 1024; /* stack in bytes */
-    taskUARTParams.priority = 15; /* 0-15 (15 is highest priority on default -> see RTOS Task configuration) */
+    taskUARTParams.priority = prio; /* 0-15 (15 is highest priority on default -> see RTOS Task configuration) */
     taskUART = Task_create((Task_FuncPtr)UARTFxn, &taskUARTParams, &eb);
     if (taskUART == NULL) {
         System_abort("TaskUART create failed");

@@ -32,8 +32,10 @@ void UARTFxn(UArg arg0, UArg arg1);
  *  Setup UART task
  *  Task has highest priority and receives 1kB of stack
  *
+ *  \param prio the task's priority.
+ *
  *  \return always zero. In case of error the system halts.
  */
-int setup_UART_Task(void);
+int setup_UART_Task(int prio);
 
 #endif
