@@ -1,11 +1,10 @@
 /*
- * CCSv6 project using TI-RTOS
- *
- */
-
-/*
  *  ======== StartBIOS.c ========
  */
+#include <stdbool.h>
+#include <stdint.h>
+#include <inc/hw_memmap.h>
+
 /* XDCtools Header files */
 #include <xdc/std.h>
 #include <xdc/cfg/global.h>
@@ -15,58 +14,45 @@
 
 /* BIOS Header files */
 #include <ti/sysbios/BIOS.h>
-#include <ti/sysbios/knl/Semaphore.h>
-#include <ti/sysbios/knl/Mailbox.h>
-#include <ti/sysbios/knl/Event.h>
 #include <ti/sysbios/knl/Task.h>
-#include <ti/sysbios/hal/Timer.h>
-#include <ti/sysbios/knl/Event.h>
 
-/* TI-RTOS Header files */
-#include <ti/drivers/UART.h>
+/* Driverlib headers */
+#include <driverlib/gpio.h>
 
-
-/*Board Header files */
+/* Board Header files */
 #include <Board.h>
 #include <EK_TM4C1294XL.h>
 
-/*application header files*/
-#include <ctype.h>
-#include <string.h>
-
-
+/* Application headers */
 #include <Blink_Task.h>
 #include <UART_Task.h>
 
-
-
 int main(void)
 {
-
     uint32_t ui32SysClock;
     static led_descriptor_t led_desc[2];
-	/* Call board init functions. */
-	ui32SysClock = Board_initGeneral(120*1000*1000);
-	(void)ui32SysClock; // We don't really need this (yet)
+    /* Call board init functions. */
+    ui32SysClock = Board_initGeneral(120*1000*1000);
+    (void)ui32SysClock; // We don't really need this (yet)
 
-	led_desc[0].port_base = GPIO_PORTN_BASE;
-	led_desc[0].led = GPIO_PIN_1;
-	/*Initialize+start Blink Task*/
-	(void) setup_Blink_Task(&led_desc[0], 500);
-	/*System_printf() is VERY slow!*/
-	System_printf("Created Blink Task1\n");
-	System_flush();
+    led_desc[0].port_base = GPIO_PORTN_BASE;
+    led_desc[0].led = GPIO_PIN_1;
+    /* Initialize+start Blink Task*/
+    (void)setup_Blink_Task(&led_desc[0], 500);
+    /* System_printf() is VERY slow!*/
+    System_printf("Created Blink Task1\n");
+    System_flush();
 
-	led_desc[1].port_base = GPIO_PORTF_BASE;
-	led_desc[1].led = GPIO_PIN_0;
-	/*Initialize+start Blink Task*/
-	(void) setup_Blink_Task(&led_desc[1], 250);
-	System_printf("Created Blink Task2\n");
-	System_flush();
+    led_desc[1].port_base = GPIO_PORTF_BASE;
+    led_desc[1].led = GPIO_PIN_0;
+    /*Initialize+start Blink Task*/
+    (void)setup_Blink_Task(&led_desc[1], 250);
+    System_printf("Created Blink Task2\n");
+    System_flush();
 
-	/*Initialize+start UART Task*/
-	(void) setup_UART_Task();
-	System_printf("Created UART Task\n");
+    /*Initialize+start UART Task*/
+    (void)setup_UART_Task();
+    System_printf("Created UART Task\n");
 
     /* SysMin will only print to the console upon calling flush or exit */
 
@@ -75,5 +61,4 @@ int main(void)
 
     /* Start BIOS */
     BIOS_start();
-
 }
