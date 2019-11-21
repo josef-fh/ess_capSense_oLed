@@ -33,7 +33,7 @@
 int main(void)
 {
     uint32_t ui32SysClock;
-    static led_descriptor_t led_desc[2];
+    static struct led_descriptor led_desc[2];
     /* Call board init functions. */
     ui32SysClock = Board_initGeneral(120*1000*1000);
     (void)ui32SysClock; // We don't really need this (yet)

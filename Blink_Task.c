@@ -32,7 +32,7 @@
  */
 void BlinkFxn(UArg arg0, UArg arg1)
 {
-    led_descriptor_t *led_desc = (led_descriptor_t *)arg0;
+    struct led_descriptor *led_desc = (struct led_descriptor *)arg0;
     uint32_t wait_ticks = (uint32_t)arg1;
     /* GPIO driverlib API uses same bit pattern for GPIO mask and value. */
     uint8_t ui8val = (uint8_t)led_desc->led;
@@ -50,7 +50,7 @@ void BlinkFxn(UArg arg0, UArg arg1)
 /*
  *  Setup task function
  */
-int setup_Blink_Task(int prio, xdc_String name, led_descriptor_t *led_desc, uint32_t wait_ticks)
+int setup_Blink_Task(int prio, xdc_String name, struct led_descriptor *led_desc, uint32_t wait_ticks)
 {
     Task_Params taskLedParams;
     Task_Handle taskLed;
