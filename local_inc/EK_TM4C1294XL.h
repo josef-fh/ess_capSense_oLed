@@ -55,11 +55,11 @@ extern "C" {
 
 /*i2c configuration*/
 #define I2CM_7 0
-#define I2CM_8 0
+#define I2CM_8 1
 
 /*spi configguration*/
-#define SSIM_2 1
-#define SSIM_3 1
+#define SSIM_2 0
+#define SSIM_3 0
 
 #if (I2CM_7 && SSIM_2)
 	#error "I2M_7 and SSIM_2 use the same physical pins -> conflict - Please configure to your needs (local_inc/EK_TM4C1294XL.h)"
