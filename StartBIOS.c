@@ -29,21 +29,29 @@
 /* Application headers */
 #include <UART_Task.h>
 #include "CapSense_Task.h"
+#include "Broker_Task.h"
 
 int main(void)
 {
     uint32_t ui32SysClock;
     static struct capSense_descriptor capSense_des;
+    static struct broker_descriptor broker_des;
+
     /* Call board init functions. */
     ui32SysClock = Board_initGeneral(120*1000*1000);
     (void)ui32SysClock;
 
     capSense_des.g_ui32SysClock = ui32SysClock;
+    broker_des.g_ui32SysClock = ui32SysClock;
 
-    /* Initialize+start Blink Task*/
+    /* Initialize+start CapSense Task*/
     (void)setup_CapSense_Task(15, "CapSense",&capSense_des);
-    /* System_printf() is VERY slow!*/
-    System_printf("Created Blink Task1\n");
+    System_printf("Created CapSense Task1\n");
+    System_flush();
+
+    /* Initialize+start Broker Task*/
+    (void)setup_Broker_Task(15, "Broker",&broker_des);
+    System_printf("Created Broker Task1\n");
     System_flush();
 
     /*Initialize+start UART Task*/

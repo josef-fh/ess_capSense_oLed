@@ -1,5 +1,5 @@
 /*
- *  ======== Blink_Task.c ========
+ *  ======== CapSense_Task.c ========
  *  Author: Michael Kranl, Josef Ramsauer
  */
 #include <stdbool.h>
@@ -263,7 +263,7 @@ int setup_CapSense_Task(int prio, xdc_String name, struct capSense_descriptor *c
     Error_init(&eb);
     Task_Params_init(&taskCapSenseParams);
     taskCapSenseParams.instance->name = name;
-    taskCapSenseParams.stackSize = 2048;//1024; /* stack in bytes */
+    taskCapSenseParams.stackSize = 1024;//2048; /* stack in bytes */
     taskCapSenseParams.priority = prio; /* 0-15 (15 is highest priority on default -> see RTOS Task configuration) */
     taskCapSenseParams.arg0 = (UArg)capSense_desc; /* pass led descriptor as arg0 */
     taskCapSense = Task_create((Task_FuncPtr)CapSenseMain, &taskCapSenseParams, &eb);
