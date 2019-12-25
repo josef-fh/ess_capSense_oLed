@@ -41,7 +41,7 @@ uint8_t buffer[2];
 uint8_t buffer_old[2];
 static uint16_t ir_raw;
 
-void initI2C()
+void I2c_init()
 {
     Board_initI2C();
     I2C_Params_init(&i2cparams);
@@ -49,6 +49,7 @@ void initI2C()
     i2cparams.transferMode = I2C_MODE_BLOCKING;/*important if you call I2C_transfer in Task context*/
     i2cparams.transferCallbackFxn = NULL;
     i2c_handle = I2C_open(EK_TM4C1294XL_I2C8, &i2cparams);
+
     if (i2c_handle == NULL)
     {
         System_abort("I2C was not opened");
@@ -56,7 +57,7 @@ void initI2C()
 }
 
 //--------------- Reads data
-uint8_t hrClick_read (uint8_t reg)
+uint8_t I2c_read (uint8_t reg)
 {
 
     I2C_Transaction i2c;
@@ -82,7 +83,7 @@ uint8_t hrClick_read (uint8_t reg)
 }
 
 //--------------- Writes data
-void hrClick_write (uint8_t reg, uint8_t regbit)
+void I2c_write (uint8_t reg, uint8_t regbit)
 {
     I2C_Transaction i2c;
     uint8_t writeBuffer[2];
@@ -104,37 +105,37 @@ void hrClick_write (uint8_t reg, uint8_t regbit)
 }
 
 
-void hrClick_config(void)
+void I2c_capSenseConf(void)
 {
-    hrClick_write(COMMAND_REG, 0x08);
-    hrClick_write(CS_ENABL1,   0x1F);     // Five pins will be used for Slider pads
-    hrClick_write(CS_ENABL0,   0x18);     // Two pins will be used for Button pads
-    hrClick_write(GPIO_ENABLE0,0x03);     // Three pins will be used as GPIO 2 for LED and 1 as GPIO2
-    hrClick_write(DM_STRONG0,  0x03);     // Enables strong drive mode for GPIOs
+    I2c_write(COMMAND_REG, 0x08);
+    I2c_write(CS_ENABL1,   0x1F);     // Five pins will be used for Slider pads
+    I2c_write(CS_ENABL0,   0x18);     // Two pins will be used for Button pads
+    I2c_write(GPIO_ENABLE0,0x03);     // Three pins will be used as GPIO 2 for LED and 1 as GPIO2
+    I2c_write(DM_STRONG0,  0x03);     // Enables strong drive mode for GPIOs
 
-    hrClick_write(CS_SLID_CONFIG, 0x01);  // Enable slider
+    I2c_write(CS_SLID_CONFIG, 0x01);  // Enable slider
     /*
        Configure slider resolution Resolution = (SensorsInSlider - 1) * Multiplier
        Resolution = 4 * 16.00 = 64 so the slider_val will be in range 0 to 64
     */
-    hrClick_write(CS_SLID_MULM,   0x10);
-    hrClick_write(CS_SLID_MULL,   0x00);
-    hrClick_write(COMMAND_REG, 0x01);     // Store Current Configuration to NVM
+    I2c_write(CS_SLID_MULM,   0x10);
+    I2c_write(CS_SLID_MULL,   0x00);
+    I2c_write(COMMAND_REG, 0x01);     // Store Current Configuration to NVM
     SysCtlDelay(15000000);
-    hrClick_write(COMMAND_REG, 0x06);     // Reconfigure Device (POR)
+    I2c_write(COMMAND_REG, 0x06);     // Reconfigure Device (POR)
     SysCtlDelay(600000);
     // Initial ON*OFF*ON LEDs (inverse logic 0-LED ON, 1-LED OFF)
-    hrClick_write(OUTPUT_PORT0, 0x00);
+    I2c_write(OUTPUT_PORT0, 0x00);
     SysCtlDelay(600000);
-    hrClick_write(OUTPUT_PORT0, 0x03);
+    I2c_write(OUTPUT_PORT0, 0x03);
     SysCtlDelay(600000);
 
-    hrClick_write(OUTPUT_PORT0, 0x00);
+    I2c_write(OUTPUT_PORT0, 0x00);
     SysCtlDelay(600000);
 }
 
 
-void hrClick_writeRead(uint8_t reg)
+void I2c_writeRead(uint8_t reg)
 {
     I2C_Transaction i2c;
     uint8_t readBuffer[2] = {};
@@ -171,12 +172,12 @@ void CapSenseMain(UArg arg0,UArg arg1)
     uint8_t btn0st, btn1st;
     static uint8_t tgl0, tgl1;
 
-    initI2C();
-    hrClick_config();
+    I2c_init();
+    I2c_capSenseConf();
 
     while(true)
     {
-        cs_status = hrClick_read(CS_READ_STATUS0);
+        cs_status = I2c_read(CS_READ_STATUS0);
         btn0st = (cs_status & 0x08) >> 3;
         btn1st = (cs_status & 0x10) >> 4;
 
@@ -206,7 +207,7 @@ void CapSenseMain(UArg arg0,UArg arg1)
             buffer_old[1] = buffer[1];
         }
 
-        hrClick_writeRead(CS_READ_CEN_POSM);
+        I2c_writeRead(CS_READ_CEN_POSM);
 
 
         // Check button 0
@@ -243,7 +244,7 @@ void CapSenseMain(UArg arg0,UArg arg1)
             led1st = 0x02 ^ led1st;     // Update the LED status
             tgl1 = 0;                   // Reset toggle flag
         }
-        hrClick_write(OUTPUT_PORT0, 0x1C | led1st  | led0st);
+        I2c_write(OUTPUT_PORT0, 0x1C | led1st  | led0st);
         SysCtlDelay(1200000);
     }
 }
