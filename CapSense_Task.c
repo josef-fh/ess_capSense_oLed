@@ -187,11 +187,7 @@ void CapSenseMain(UArg arg0,UArg arg1)
         if (btn0st != 0 )
         {
             mbox.pressedButton0 = true;
-<<<<<<< HEAD
             Mailbox_post(capSense_desc->mailbox_des[MESSAGE_FROM_CAPSENSE_TO_BROKER].mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
-=======
-            Mailbox_post(capSense_desc->mailbox_des->mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
->>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
             ignoreOneTimeSlider = true;  //after pressing a button the slider must be ignore once
             printf("data: %d",btn0st);
             printf("\n");
@@ -200,11 +196,7 @@ void CapSenseMain(UArg arg0,UArg arg1)
         if (btn1st != 0 )
         {
             mbox.pressedButton1 = true;
-<<<<<<< HEAD
             Mailbox_post(capSense_desc->mailbox_des[MESSAGE_FROM_CAPSENSE_TO_BROKER].mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
-=======
-            Mailbox_post(capSense_desc->mailbox_des->mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
->>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
             ignoreOneTimeSlider = true;
             printf("data1: %d",btn1st);
             printf("\n");
@@ -215,11 +207,7 @@ void CapSenseMain(UArg arg0,UArg arg1)
             if (ignoreOneTimeSlider != true)
             {
                 mbox.valueSlider = buffer[1];
-<<<<<<< HEAD
                 Mailbox_post(capSense_desc->mailbox_des[MESSAGE_FROM_CAPSENSE_TO_BROKER].mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
-=======
-                Mailbox_post(capSense_desc->mailbox_des->mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
->>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
                 printf("buffer1: %d:  %d",buffer[1], ir_raw);
                 printf("\n");
             }

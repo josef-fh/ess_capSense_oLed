@@ -69,7 +69,6 @@ void UARTFxn(UArg arg0, UArg arg1)
         capSense_values mbox = {};
 
 
-<<<<<<< HEAD
         //if(Mailbox_getNumPendingMsgs(uart_des->mailbox_des->mailboxHandle)!=0)
         //{
             Mailbox_pend(uart_des->mailbox_des[MESSAGE_FROM_BROKER_TO_UART].mailboxHandle, &mbox, BIOS_WAIT_FOREVER);
@@ -77,42 +76,21 @@ void UARTFxn(UArg arg0, UArg arg1)
             if(0 != mbox.pressedButton0)
             {
                 snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Button 0 pressed: %d\r\n", mbox.pressedButton0);
-=======
-        if(Mailbox_getNumPendingMsgs(uart_des->mailbox_des->mailboxHandle)!=0)
-        {
-            Mailbox_pend(uart_des->mailbox_des->mailboxHandle, &mbox, BIOS_WAIT_FOREVER);
-
-            if(0 != mbox.pressedButton0)
-            {
-                snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Button 0 pressed: %d\n\r", mbox.pressedButton0);
->>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
                 UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
             }
             if(0 != mbox.pressedButton1)
             {
-<<<<<<< HEAD
                 snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Button 1 pressed: %d\r\n", mbox.pressedButton1);
-=======
-                snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Button 1 pressed: %d\n\r", mbox.pressedButton1);
->>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
                 UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
             }
 
             if(0 != mbox.valueSlider)
             {
-<<<<<<< HEAD
                 snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Slider input value: %d\r\n", mbox.valueSlider);
                 UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
             }
 
         //}
-=======
-                snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Slider input value: %d\n\r", mbox.valueSlider);
-                UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
-            }
-
-        }
->>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
     }
 }
 
