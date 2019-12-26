@@ -4,6 +4,7 @@
  */
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <inc/hw_memmap.h>
 
 /* XDCtools Header files */
@@ -33,12 +34,16 @@
 #include "UART_Task.h"
 
 
+#define SIZE_OUPUT_ARRAY    (30)
+
 /*
  *  ======== UART  ========
  *  Echo Characters recieved and show reception on Port N Led 0
  */
 void UARTFxn(UArg arg0, UArg arg1)
 {
+    struct uart_descriptor *uart_des = (struct uart_descriptor *)arg0;
+
     UART_Handle uart;
     UART_Params uartParams;
     const char echoPrompt[] = "\fEchoing characters:\r\n";
@@ -60,12 +65,32 @@ void UARTFxn(UArg arg0, UArg arg1)
 
     /* Loop forever echoing */
     while (1) {
-        char input;
-        UART_read(uart, &input, 1);
-        GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 1);
-        UART_write(uart, &input, 1); // Remove this line to stop echoing!
-        Task_sleep(5);
-        GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 0);
+        char writeToTerminal[SIZE_OUPUT_ARRAY] = {};
+        capSense_values mbox = {};
+
+
+        if(Mailbox_getNumPendingMsgs(uart_des->mailbox_des->mailboxHandle)!=0)
+        {
+            Mailbox_pend(uart_des->mailbox_des->mailboxHandle, &mbox, BIOS_WAIT_FOREVER);
+
+            if(0 != mbox.pressedButton0)
+            {
+                snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Button 0 pressed: %d\n\r", mbox.pressedButton0);
+                UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
+            }
+            if(0 != mbox.pressedButton1)
+            {
+                snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Button 1 pressed: %d\n\r", mbox.pressedButton1);
+                UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
+            }
+
+            if(0 != mbox.valueSlider)
+            {
+                snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Slider input value: %d\n\r", mbox.valueSlider);
+                UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
+            }
+
+        }
     }
 }
 
@@ -73,7 +98,7 @@ void UARTFxn(UArg arg0, UArg arg1)
 /*
  *  Setup task function
  */
-int setup_UART_Task(int prio)
+int setup_UART_Task(int prio, struct uart_descriptor *uart_des)
 {
     Task_Params taskUARTParams;
     Task_Handle taskUART;
@@ -95,6 +120,7 @@ int setup_UART_Task(int prio)
     Task_Params_init(&taskUARTParams);
     taskUARTParams.stackSize = 1024; /* stack in bytes */
     taskUARTParams.priority = prio; /* 0-15 (15 is highest priority on default -> see RTOS Task configuration) */
+    taskUARTParams.arg0 = (UArg)uart_des; /* pass led descriptor as arg0 */
     taskUART = Task_create((Task_FuncPtr)UARTFxn, &taskUARTParams, &eb);
     if (taskUART == NULL) {
         System_abort("TaskUART create failed");

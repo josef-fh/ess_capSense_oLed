@@ -166,6 +166,8 @@ void I2c_writeRead(uint8_t reg)
 
 void CapSenseMain(UArg arg0,UArg arg1)
 {
+    struct capSense_descriptor *capSense_desc = (struct capSense_descriptor *)arg0;
+
     static bool ignoreOneTimeSlider;
     uint8_t led0st = 0, led1st = 0;
     uint8_t cs_status;
@@ -177,12 +179,15 @@ void CapSenseMain(UArg arg0,UArg arg1)
 
     while(true)
     {
+        capSense_values mbox = {};
         cs_status = I2c_read(CS_READ_STATUS0);
         btn0st = (cs_status & 0x08) >> 3;
         btn1st = (cs_status & 0x10) >> 4;
 
         if (btn0st != 0 )
         {
+            mbox.pressedButton0 = true;
+            Mailbox_post(capSense_desc->mailbox_des->mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
             ignoreOneTimeSlider = true;  //after pressing a button the slider must be ignore once
             printf("data: %d",btn0st);
             printf("\n");
@@ -190,6 +195,8 @@ void CapSenseMain(UArg arg0,UArg arg1)
 
         if (btn1st != 0 )
         {
+            mbox.pressedButton1 = true;
+            Mailbox_post(capSense_desc->mailbox_des->mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
             ignoreOneTimeSlider = true;
             printf("data1: %d",btn1st);
             printf("\n");
@@ -199,6 +206,8 @@ void CapSenseMain(UArg arg0,UArg arg1)
         {
             if (ignoreOneTimeSlider != true)
             {
+                mbox.valueSlider = buffer[1];
+                Mailbox_post(capSense_desc->mailbox_des->mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
                 printf("buffer1: %d:  %d",buffer[1], ir_raw);
                 printf("\n");
             }

@@ -36,13 +36,35 @@ int main(void)
     uint32_t ui32SysClock;
     static struct capSense_descriptor capSense_des;
     static struct broker_descriptor broker_des;
+    static struct uart_descriptor uart_des;
+    static mailbox_descriptor mailbox_des0;
+    static mailbox_descriptor mailbox_des1;
+
+    Error_Block eb;
+    Error_init (&eb);
+    Mailbox_Params_init (&(mailbox_des0.mboxParams));
+    mailbox_des0.mailboxHandle = Mailbox_create (sizeof(capSense_values), 20, &(mailbox_des0.mboxParams), &eb);
+
+    Mailbox_Params_init (&(mailbox_des1.mboxParams));
+    mailbox_des1.mailboxHandle = Mailbox_create (sizeof(capSense_values), 20, &(mailbox_des1.mboxParams), &eb);
+
+    if ((NULL ==mailbox_des0.mailboxHandle) || (NULL ==mailbox_des1.mailboxHandle))
+    {
+        System_abort("taskCapSense create failed");
+    }
 
     /* Call board init functions. */
     ui32SysClock = Board_initGeneral(120*1000*1000);
     (void)ui32SysClock;
 
     capSense_des.g_ui32SysClock = ui32SysClock;
+    capSense_des.mailbox_des = &mailbox_des0;
+
     broker_des.g_ui32SysClock = ui32SysClock;
+    broker_des.mailbox_des[MAILBOX_FROM_CAPSENSE_TO_BROKER] = &mailbox_des0;
+    broker_des.mailbox_des[MAILBOX_FROM_BROKER_TO_UART] = &mailbox_des1;
+
+    uart_des.mailbox_des = &mailbox_des1;
 
     /* Initialize+start CapSense Task*/
     (void)setup_CapSense_Task(15, "CapSense",&capSense_des);
@@ -50,12 +72,12 @@ int main(void)
     System_flush();
 
     /* Initialize+start Broker Task*/
-    (void)setup_Broker_Task(15, "Broker",&broker_des);
+    (void)setup_Broker_Task(14, "Broker",&broker_des);
     System_printf("Created Broker Task1\n");
     System_flush();
 
     /*Initialize+start UART Task*/
-    (void)setup_UART_Task(15);
+    (void)setup_UART_Task(14,&uart_des);
     System_printf("Created UART Task\n");
 
     /* SysMin will only print to the console upon calling flush or exit */

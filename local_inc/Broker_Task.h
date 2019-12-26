@@ -1,14 +1,12 @@
-/*! \file Blink_Task.h
-    \brief Blink task
-    \author Matthias Wenzl
-    \author Michael Kramer
+/*
+ * Broker_Task.h
+ *
+ *  Created on: 25 Dec 2019
+ *      Author: JoRam
+ */
 
-    Blinking LED Task example.
-
-*/
-
-#ifndef CAP_SENSE_TASK_H_
-#define CAP_SENSE_TASK_H_
+#ifndef LOCAL_INC_BROKER_TASK_H_
+#define LOCAL_INC_BROKER_TASK_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -30,25 +28,36 @@
 #include <driverlib/uart.h>
 #include <driverlib/sysctl.h>
 #include <stdio.h>
-#include "Broker_Task.h"
+#include <ti/sysbios/knl/Mailbox.h>
 
 #include "CY8C201A0.h"
 
-
-
-struct capSense_descriptor {
-	uint32_t g_ui32SysClock;
-	mailbox_descriptor *mailbox_des;
+enum mailboxIndex{
+    MAILBOX_FROM_CAPSENSE_TO_BROKER,
+    MAILBOX_FROM_BROKER_TO_UART,
+    MAILBOX_FROM_BROKER_TO_OLED,
+    MAILBOX_ENTIRE_NUMBER
 };
 
 
-/*! \fn BlinkFxn
- *  \brief Execute Blink Task
- *
- *   \param arg0 led descriptor struct
- *   \param arg1 Ticks to wait
- */
-void CapSenseMain(UArg arg0, UArg arg1);
+typedef struct{
+    Mailbox_Params mboxParams;
+    Mailbox_Handle mailboxHandle;
+}mailbox_descriptor;
+
+
+struct broker_descriptor {
+    uint32_t g_ui32SysClock;
+    mailbox_descriptor *mailbox_des[MAILBOX_ENTIRE_NUMBER];
+};
+
+
+
+typedef struct{
+    bool pressedButton0;
+    bool pressedButton1;
+    uint8_t valueSlider;
+}capSense_values;
 
 /*! \fn setup_Blink_Task
  *  \brief Setup Blink task
@@ -63,6 +72,7 @@ void CapSenseMain(UArg arg0, UArg arg1);
  *
  *  \return always zero. In case of error the system halts.
  */
-int setup_CapSense_Task(int prio, xdc_String name, struct capSense_descriptor *capSense_desc);
+int setup_Broker_Task(int prio, xdc_String name, struct broker_descriptor *capSense_desc);
 
-#endif
+
+#endif /* LOCAL_INC_BROKER_TASK_H_ */
