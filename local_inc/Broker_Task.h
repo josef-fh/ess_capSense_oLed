@@ -33,10 +33,17 @@
 #include "CY8C201A0.h"
 
 enum mailboxIndex{
+<<<<<<< HEAD
     MESSAGE_FROM_CAPSENSE_TO_BROKER,
     MESSAGE_FROM_BROKER_TO_UART,
     MESSAGE_FROM_BROKER_TO_OLED,
     MESSAGE_ENTIRE_NUMBER
+=======
+    MAILBOX_FROM_CAPSENSE_TO_BROKER,
+    MAILBOX_FROM_BROKER_TO_UART,
+    MAILBOX_FROM_BROKER_TO_OLED,
+    MAILBOX_ENTIRE_NUMBER
+>>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
 };
 
 
@@ -48,7 +55,11 @@ typedef struct{
 
 struct broker_descriptor {
     uint32_t g_ui32SysClock;
+<<<<<<< HEAD
     mailbox_descriptor *mailbox_des;
+=======
+    mailbox_descriptor *mailbox_des[MAILBOX_ENTIRE_NUMBER];
+>>>>>>> 7e822160321311000fe972d67ed5f8092afe3ba4
 };
 
 
