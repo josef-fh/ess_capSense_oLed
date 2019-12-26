@@ -31,32 +31,58 @@
 #include "CapSense_Task.h"
 #include "Broker_Task.h"
 
+void CreateMailbox(mailbox_descriptor *mailbox_des)
+{
+    uint8_t idx;
+    Error_Block eb;
+    Error_init (&eb);
+
+    for(idx = 0; idx < MESSAGE_ENTIRE_NUMBER; idx++)
+    {
+        Mailbox_Params_init(&mailbox_des[idx].mboxParams);
+        mailbox_des[idx].mailboxHandle = Mailbox_create (sizeof(capSense_values), 20, &(mailbox_des[idx].mboxParams), &eb);
+
+        if(NULL == mailbox_des[idx].mailboxHandle)
+        {
+            System_abort("taskCapSense create failed");
+        }
+    }
+}
+
 int main(void)
 {
     uint32_t ui32SysClock;
     static struct capSense_descriptor capSense_des;
     static struct broker_descriptor broker_des;
+    static struct uart_descriptor uart_des;
+    static mailbox_descriptor mailbox_des[MESSAGE_ENTIRE_NUMBER];
 
     /* Call board init functions. */
     ui32SysClock = Board_initGeneral(120*1000*1000);
     (void)ui32SysClock;
 
-    capSense_des.g_ui32SysClock = ui32SysClock;
-    broker_des.g_ui32SysClock = ui32SysClock;
-
-    /* Initialize+start CapSense Task*/
-    (void)setup_CapSense_Task(15, "CapSense",&capSense_des);
-    System_printf("Created CapSense Task1\n");
-    System_flush();
+    /* create Mailbox*/
+    CreateMailbox(mailbox_des);
 
     /* Initialize+start Broker Task*/
-    (void)setup_Broker_Task(15, "Broker",&broker_des);
+    broker_des.g_ui32SysClock = ui32SysClock;
+    broker_des.mailbox_des = mailbox_des;
+    (void)setup_Broker_Task(14, "Broker",&broker_des);
     System_printf("Created Broker Task1\n");
     System_flush();
 
     /*Initialize+start UART Task*/
-    (void)setup_UART_Task(15);
+    uart_des.g_ui32SysClock = ui32SysClock;
+    uart_des.mailbox_des = mailbox_des;
+    (void)setup_UART_Task(14,&uart_des);
     System_printf("Created UART Task\n");
+
+    /* Initialize+start CapSense Task*/
+    capSense_des.g_ui32SysClock = ui32SysClock;
+    capSense_des.mailbox_des = mailbox_des;
+    (void)setup_CapSense_Task(15, "CapSense",&capSense_des);
+    System_printf("Created CapSense Task1\n");
+    System_flush();
 
     /* SysMin will only print to the console upon calling flush or exit */
 

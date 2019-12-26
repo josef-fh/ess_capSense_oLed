@@ -35,8 +35,16 @@
 
 void BrokerMain(UArg arg0,UArg arg1)
 {
-
-
+    struct broker_descriptor *broker_desc = (struct broker_descriptor *)arg0;
+    capSense_values mbox = {};
+    while(true)
+    {
+        //if(Mailbox_getNumPendingMsgs(broker_desc->mailbox_des[MAILBOX_FROM_CAPSENSE_TO_BROKER]->mailboxHandle)!=0)       // Mailbox wird erst ausgelesen wenn nachrichten vorhanden sind
+        //{
+            Mailbox_pend(broker_desc->mailbox_des[MESSAGE_FROM_CAPSENSE_TO_BROKER].mailboxHandle, &mbox, BIOS_WAIT_FOREVER);
+            Mailbox_post(broker_desc->mailbox_des[MESSAGE_FROM_BROKER_TO_UART].mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
+        //}
+    }
 }
 
 /*
