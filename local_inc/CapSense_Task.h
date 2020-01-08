@@ -36,10 +36,10 @@
 
 
 
-struct capSense_descriptor {
+typedef struct {
 	uint32_t g_ui32SysClock;
 	mailbox_descriptor *mailbox_des;
-};
+}capSense_descriptor;
 
 
 /*! \fn BlinkFxn
@@ -63,6 +63,6 @@ void CapSenseMain(UArg arg0, UArg arg1);
  *
  *  \return always zero. In case of error the system halts.
  */
-int setup_CapSense_Task(int prio, xdc_String name, struct capSense_descriptor *capSense_desc);
+int setup_CapSense_Task(int prio, xdc_String name, capSense_descriptor *capSense_desc);
 
 #endif

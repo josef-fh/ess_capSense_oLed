@@ -42,7 +42,7 @@
  */
 void UARTFxn(UArg arg0, UArg arg1)
 {
-    struct uart_descriptor *uart_des = (struct uart_descriptor *)arg0;
+    uart_descriptor *uart_des = (uart_descriptor *)arg0;
 
     UART_Handle uart;
     UART_Params uartParams;
@@ -98,7 +98,7 @@ void UARTFxn(UArg arg0, UArg arg1)
 /*
  *  Setup task function
  */
-int setup_UART_Task(int prio, struct uart_descriptor *uart_des)
+int setup_UART_Task(int prio, uart_descriptor *uart_des)
 {
     Task_Params taskUARTParams;
     Task_Handle taskUART;

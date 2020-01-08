@@ -166,7 +166,7 @@ void I2c_writeRead(uint8_t reg)
 
 void CapSenseMain(UArg arg0,UArg arg1)
 {
-    struct capSense_descriptor *capSense_desc = (struct capSense_descriptor *)arg0;
+    capSense_descriptor *capSense_desc = (capSense_descriptor *)arg0;
 
     static bool ignoreOneTimeSlider;
     uint8_t led0st = 0, led1st = 0;
@@ -262,7 +262,7 @@ void CapSenseMain(UArg arg0,UArg arg1)
 /*
  *  Setup task function
  */
-int setup_CapSense_Task(int prio, xdc_String name, struct capSense_descriptor *capSense_desc)
+int setup_CapSense_Task(int prio, xdc_String name, capSense_descriptor *capSense_desc)
 {
     Task_Params taskCapSenseParams;
     Task_Handle taskCapSense;

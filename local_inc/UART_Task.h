@@ -17,10 +17,10 @@
 #include "Broker_Task.h"
 
 
-struct uart_descriptor {
+typedef struct  {
     uint32_t g_ui32SysClock;
     mailbox_descriptor *mailbox_des;
-};
+}uart_descriptor;
 
 /*! \fn UARTFxn
  *  \brief Execute UART Task
@@ -42,6 +42,6 @@ void UARTFxn(UArg arg0, UArg arg1);
  *
  *  \return always zero. In case of error the system halts.
  */
-int setup_UART_Task(int prio, struct uart_descriptor *uart_des);
+int setup_UART_Task(int prio, uart_descriptor *uart_des);
 
 #endif

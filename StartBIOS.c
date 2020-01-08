@@ -52,9 +52,9 @@ void CreateMailbox(mailbox_descriptor *mailbox_des)
 int main(void)
 {
     uint32_t ui32SysClock;
-    static struct capSense_descriptor capSense_des;
-    static struct broker_descriptor broker_des;
-    static struct uart_descriptor uart_des;
+    static capSense_descriptor capSense_des;
+    static broker_descriptor broker_des;
+    static uart_descriptor uart_des;
     static mailbox_descriptor mailbox_des[MESSAGE_ENTIRE_NUMBER];
 
     /* Call board init functions. */
