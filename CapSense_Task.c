@@ -121,17 +121,17 @@ void I2c_capSenseConf(void)
     I2c_write(CS_SLID_MULM,   0x10);
     I2c_write(CS_SLID_MULL,   0x00);
     I2c_write(COMMAND_REG, 0x01);     // Store Current Configuration to NVM
-    SysCtlDelay(15000000);
+    SysCtlDelay(10000000);
     I2c_write(COMMAND_REG, 0x06);     // Reconfigure Device (POR)
-    SysCtlDelay(600000);
+    SysCtlDelay(500000);
     // Initial ON*OFF*ON LEDs (inverse logic 0-LED ON, 1-LED OFF)
     I2c_write(OUTPUT_PORT0, 0x00);
-    SysCtlDelay(600000);
+    SysCtlDelay(500000);
     I2c_write(OUTPUT_PORT0, 0x03);
-    SysCtlDelay(600000);
+    SysCtlDelay(500000);
 
     I2c_write(OUTPUT_PORT0, 0x00);
-    SysCtlDelay(600000);
+    SysCtlDelay(500000);
 }
 
 
@@ -156,7 +156,7 @@ void I2c_writeRead(uint8_t reg)
         System_abort("I2C bus fault");
     }
 
-    if((readBuffer[0] != 255) && (readBuffer[1] != 255))// && (readBuffer[1] != 64) && (readBuffer[1] != 48))
+    if((readBuffer[0] != 255) && (readBuffer[1] != 255))
     {
         buffer[0] = readBuffer[0];
         buffer[1] = readBuffer[1];
@@ -173,6 +173,8 @@ void CapSenseMain(UArg arg0,UArg arg1)
     uint8_t cs_status;
     uint8_t btn0st, btn1st;
     static uint8_t tgl0, tgl1;
+    static bool btn0st_pres, btn1st_pres;
+
 
     I2c_init();
     I2c_capSenseConf();
@@ -184,8 +186,9 @@ void CapSenseMain(UArg arg0,UArg arg1)
         btn0st = (cs_status & 0x08) >> 3;
         btn1st = (cs_status & 0x10) >> 4;
 
-        if (btn0st != 0 )
+        if ((btn0st != 0) && (btn0st_pres != true))
         {
+            btn0st_pres = true;
             mbox.pressedButton0 = true;
             Mailbox_post(capSense_desc->mailbox_des[MESSAGE_FROM_CAPSENSE_TO_BROKER].mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
             ignoreOneTimeSlider = true;  //after pressing a button the slider must be ignore once
@@ -193,13 +196,24 @@ void CapSenseMain(UArg arg0,UArg arg1)
             printf("\n");
         }
 
-        if (btn1st != 0 )
+        if ((btn1st != 0) && (btn1st_pres != true))
         {
+            btn1st_pres = true;
             mbox.pressedButton1 = true;
             Mailbox_post(capSense_desc->mailbox_des[MESSAGE_FROM_CAPSENSE_TO_BROKER].mailboxHandle,&mbox,BIOS_WAIT_FOREVER);
             ignoreOneTimeSlider = true;
             printf("data1: %d",btn1st);
             printf("\n");
+        }
+
+        if (btn0st <= 0)
+        {
+            btn0st_pres = false;
+        }
+
+        if (btn1st <= 0)
+        {
+            btn1st_pres = false;
         }
 
         if(buffer_old[1] != buffer[1])

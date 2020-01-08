@@ -32,9 +32,11 @@
 
 /* Application headers */
 #include "UART_Task.h"
+#include "SPI_Task.h"
 
-
+void updateText(char);
 #define SIZE_OUPUT_ARRAY    (30)
+extern char g_displaytext[400];
 
 /*
  *  ======== UART  ========
@@ -65,12 +67,25 @@ void UARTFxn(UArg arg0, UArg arg1)
 
     /* Loop forever echoing */
     while (1) {
+
+        /*
+        char input;
+        UART_read(uart, &input, 1);
+        GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 1);
+        //UART_write(uart, &input, 1); // Remove this line to stop echoing!
+        updateText(input);
+        //Event_post(event->event, event->num);
+        Event_post(uart_des->event.event, uart_des->event.num);
+        //Task_sleep(5);
+        GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, 0);
+
+        */
+
         char writeToTerminal[SIZE_OUPUT_ARRAY] = {};
         capSense_values mbox = {};
 
-
-        //if(Mailbox_getNumPendingMsgs(uart_des->mailbox_des->mailboxHandle)!=0)
-        //{
+        if(Mailbox_getNumPendingMsgs(uart_des->mailbox_des[MESSAGE_FROM_BROKER_TO_UART].mailboxHandle)!=0)
+        {
             Mailbox_pend(uart_des->mailbox_des[MESSAGE_FROM_BROKER_TO_UART].mailboxHandle, &mbox, BIOS_WAIT_FOREVER);
 
             if(0 != mbox.pressedButton0)
@@ -89,8 +104,7 @@ void UARTFxn(UArg arg0, UArg arg1)
                 snprintf(writeToTerminal,SIZE_OUPUT_ARRAY,"Slider input value: %d\r\n", mbox.valueSlider);
                 UART_write(uart, &writeToTerminal, SIZE_OUPUT_ARRAY);
             }
-
-        //}
+        }
     }
 }
 
@@ -128,3 +142,13 @@ int setup_UART_Task(int prio, uart_descriptor *uart_des)
 
     return (0);
 }
+
+void updateText(char c)
+{
+    static uint8_t pos = 0;
+
+    g_displaytext[pos] = c;
+    g_displaytext[pos+1] = '\0';
+    pos = pos > 98 ? 0 : pos +1 ;
+}
+

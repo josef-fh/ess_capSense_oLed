@@ -2,7 +2,7 @@
  * Broker_Task.h
  *
  *  Created on: 25 Dec 2019
- *      Author: JoRam
+ *      Author: Michael Kranl, Josef Ramsauer
  */
 
 #ifndef LOCAL_INC_BROKER_TASK_H_
@@ -12,21 +12,6 @@
 #include <stdint.h>
 #include <xdc/std.h>
 
-#include <inc/hw_ints.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_types.h>
-#include <driverlib/debug.h>
-#include <driverlib/fpu.h>
-#include <driverlib/gpio.h>
-#include <driverlib/interrupt.h>
-#include <driverlib/pin_map.h>
-#include <driverlib/rom.h>
-#include <driverlib/rom_map.h>
-#include <driverlib/sysctl.h>
-#include <driverlib/timer.h>
-#include <driverlib/i2c.h>
-#include <driverlib/uart.h>
-#include <driverlib/sysctl.h>
 #include <stdio.h>
 #include <ti/sysbios/knl/Mailbox.h>
 
@@ -59,16 +44,15 @@ typedef struct{
     uint8_t valueSlider;
 }capSense_values;
 
-/*! \fn setup_Blink_Task
+/*! \fn setup_Broker_Task
  *  \brief Setup Blink task
  *
- *  Setup Blink task
+ *  Setup Broker Task
  *  Task has highest priority and receives 1kB of stack
  *
  *   \param prio the task's priority.
  *   \param name the task's name.
- *   \param led_desc LED descriptor.
- *   \param time to wait in ticks for led to toggle
+ *   \param broker_descriptor broker descriptor.
  *
  *  \return always zero. In case of error the system halts.
  */

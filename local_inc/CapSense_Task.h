@@ -42,24 +42,15 @@ typedef struct {
 }capSense_descriptor;
 
 
-/*! \fn BlinkFxn
- *  \brief Execute Blink Task
+/*! \fn setup_CapSense_Task
+ *  \brief Setup CapSense task
  *
- *   \param arg0 led descriptor struct
- *   \param arg1 Ticks to wait
- */
-void CapSenseMain(UArg arg0, UArg arg1);
-
-/*! \fn setup_Blink_Task
- *  \brief Setup Blink task
- *
- *  Setup Blink task
+ *  Setup CapSense task
  *  Task has highest priority and receives 1kB of stack
  *
  *   \param prio the task's priority.
  *   \param name the task's name.
- *   \param led_desc LED descriptor.
- *   \param time to wait in ticks for led to toggle
+ *   \param capSense_descriptor CapSebse descriptor.
  *
  *  \return always zero. In case of error the system halts.
  */

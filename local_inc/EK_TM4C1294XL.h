@@ -58,7 +58,7 @@ extern "C" {
 #define I2CM_8 1
 
 /*spi configguration*/
-#define SSIM_2 0
+#define SSIM_2 1
 #define SSIM_3 0
 
 #if (I2CM_7 && SSIM_2)
